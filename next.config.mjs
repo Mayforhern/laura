@@ -1,18 +1,27 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-
   output: 'export',
   images: {
     unoptimized: true,
+    domains: ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'],
   },
   basePath: '/laura',
-  assetPrefix: '/laura/',
+  assetPrefix: '/laura',
+  trailingSlash: true,
+
+  // Disable TypeScript and ESLint checks during build
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
+  // Configure static export
+  distDir: 'out',
+
+  // Skip API routes during static export
+  skipApiRoutes: true,
 
   experimental: {
     missingSuspenseWithCSRBailout: true
@@ -20,25 +29,20 @@ const nextConfig = {
 
   reactStrictMode: false,
 
-  // Disable image optimization warnings
-  images: {
-    unoptimized: true,
-  },
-
   // Ignore specific page extensions
   pageExtensions: ["tsx", "ts", "jsx", "js"].filter(
     (ext) => !ext.includes("spec")
   ),
 
   // Configure webpack
-  webpack: (config, { isServer, dev }) => {
-    // Ignore specific modules that might cause issues
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      sharp$: false,
-      canvas$: false,
-    };
-
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Ignore all files in api directory during client-side compilation
+      config.module.rules.push({
+        test: /app\/api\/.+/,
+        loader: 'ignore-loader'
+      });
+    }
     return config;
   },
 
