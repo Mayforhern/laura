@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+  directUrl = env("MONGODB_URI")
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  email         String?   @unique
+  name          String?
+  walletAddress String?   @unique
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  activities    Activity[]
+}
+
+model Session {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String       @db.ObjectId
+  user          User         @relation(fields: [userId], references: [id])
+  startTime     DateTime     @default(now())
+  endTime       DateTime?
+  type          String       // e.g., "therapy", "support_group"
+  metadata      Json?        // Additional session data
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  supportGroup  SupportGroup? @relation(fields: [groupId], references: [id])
+  groupId       String?      @db.ObjectId
+}
+
+model SupportGroup {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  sessions    Session[]
+}
+
+model Activity {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  type        String   // e.g., "session_started", "group_created"
+  description String
+  metadata    Json?    // Additional activity data
+  createdAt   DateTime @default(now())
+}
