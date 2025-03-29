@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push && next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "drizzle-kit push",
@@ -13,7 +13,8 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:seed": "ts-node prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "deploy": "next build && touch out/.nojekyll && gh-pages -d out -t true"
   },
   "dependencies": {
     "@auth/core": "^0.34.2",
@@ -139,6 +140,7 @@
     "drizzle-kit": "^0.30.4",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
+    "gh-pages": "^6.3.0",
     "hardhat": "^2.22.18",
     "ignore-loader": "^0.1.2",
     "postcss": "^8",

@@ -7,9 +7,15 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
+  basePath: '/laura',
+  assetPrefix: '/laura/',
+
   experimental: {
-    suppressHydrationWarning: true,
-    missingSuspenseWithCSRBailout: false,
+    missingSuspenseWithCSRBailout: true
   },
 
   reactStrictMode: false,
