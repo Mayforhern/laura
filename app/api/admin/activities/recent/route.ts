@@ -32,7 +32,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error fetching recent activities:', error);
-    // Return empty array instead of mock data
+    // Return empty array instead of error status
     return NextResponse.json({ activities: [] });
   }
 } 

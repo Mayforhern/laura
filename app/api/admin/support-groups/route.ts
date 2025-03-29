@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 interface SupportGroup {
   id: string;
@@ -14,12 +12,14 @@ interface SupportGroup {
 // Get all support groups
 export async function GET() {
   try {
+    // Get all support groups
     const groups = await prisma.supportGroup.findMany({
       orderBy: {
         createdAt: 'desc'
       }
     });
 
+    // Get session counts for each group
     const groupsWithCounts = await Promise.all(
       groups.map(async (group: SupportGroup) => {
         const sessionCount = await prisma.session.count({
@@ -31,9 +31,7 @@ export async function GET() {
 
         return {
           ...group,
-          _count: {
-            sessions: sessionCount
-          }
+          sessionCount
         };
       })
     );
@@ -41,10 +39,7 @@ export async function GET() {
     return NextResponse.json(groupsWithCounts);
   } catch (error) {
     console.error('Error fetching support groups:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch support groups', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch support groups' }, { status: 500 });
   }
 }
 
