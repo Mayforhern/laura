@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate && prisma db push && next build",
+    "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "drizzle-kit push",
@@ -12,7 +12,8 @@
     "init-chat": "ts-node -r tsconfig-paths/register scripts/init-chat-rooms.ts",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "prisma:seed": "ts-node prisma/seed.ts"
+    "prisma:seed": "ts-node prisma/seed.ts",
+    "postinstall": "npx prisma generate"
   },
   "dependencies": {
     "@auth/core": "^0.34.2",
