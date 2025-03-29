@@ -24,6 +24,7 @@ export async function GET() {
       groups.map(async (group: SupportGroup) => {
         const sessionCount = await prisma.session.count({
           where: {
+            type: 'support_group',
             groupId: group.id
           }
         });
